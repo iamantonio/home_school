@@ -26,6 +26,7 @@ interface Curriculum {
   title: string
   description: string | null
   grade_level: number
+  student_id: string
   units: Unit[]
 }
 
@@ -168,26 +169,35 @@ export function CurriculumDetail() {
                     {unit.learning_objectives
                       .sort((a, b) => a.order - b.order)
                       .map((obj) => (
-                        <li key={obj.id} className="flex items-start gap-3">
-                          <span
-                            className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                            style={{ backgroundColor: 'var(--color-forest)' }}
-                          />
-                          <div>
-                            <p className="font-medium" style={{ color: 'var(--color-brown)' }}>
-                              {obj.title}
-                            </p>
-                            {obj.description && (
-                              <p className="text-sm" style={{ color: 'var(--color-brown-light)' }}>
-                                {obj.description}
+                        <li key={obj.id} className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-3">
+                            <span
+                              className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
+                              style={{ backgroundColor: 'var(--color-forest)' }}
+                            />
+                            <div>
+                              <p className="font-medium" style={{ color: 'var(--color-brown)' }}>
+                                {obj.title}
                               </p>
-                            )}
-                            {obj.standard_codes.length > 0 && (
-                              <p className="text-xs mt-1" style={{ color: 'var(--color-brown-light)', opacity: 0.7 }}>
-                                Standards: {obj.standard_codes.join(', ')}
-                              </p>
-                            )}
+                              {obj.description && (
+                                <p className="text-sm" style={{ color: 'var(--color-brown-light)' }}>
+                                  {obj.description}
+                                </p>
+                              )}
+                              {obj.standard_codes.length > 0 && (
+                                <p className="text-xs mt-1" style={{ color: 'var(--color-brown-light)', opacity: 0.7 }}>
+                                  Standards: {obj.standard_codes.join(', ')}
+                                </p>
+                              )}
+                            </div>
                           </div>
+                          <Link
+                            to={`/quiz/${obj.id}?student=${curriculum.student_id}`}
+                            className="btn btn-ghost text-sm flex-shrink-0"
+                            style={{ color: 'var(--color-forest)' }}
+                          >
+                            Take Quiz
+                          </Link>
                         </li>
                       ))}
                   </ul>
