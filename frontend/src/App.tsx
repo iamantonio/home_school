@@ -6,6 +6,7 @@ import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { Learn } from './pages/Learn'
 import { Sessions } from './pages/Sessions'
+import { SessionDetail } from './pages/SessionDetail'
 
 const queryClient = new QueryClient()
 
@@ -20,6 +21,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="learn" element={<Learn />} />
               <Route path="sessions" element={<Sessions />} />
+              <Route path="sessions/:sessionId" element={<SessionDetail />} />
             </Route>
           </Routes>
         </BrowserRouter>
