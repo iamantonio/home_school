@@ -8,6 +8,7 @@ import { Learn } from './pages/Learn'
 import { Sessions } from './pages/Sessions'
 import { SessionDetail } from './pages/SessionDetail'
 import { Dashboard } from './pages/Dashboard'
+import { ParentDashboard } from './pages/ParentDashboard'
 
 const queryClient = new QueryClient()
 
@@ -24,6 +25,7 @@ function App() {
               <Route path="sessions" element={<Sessions />} />
               <Route path="sessions/:sessionId" element={<SessionDetail />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="parent" element={<ParentDashboard />} />
             </Route>
           </Routes>
         </BrowserRouter>

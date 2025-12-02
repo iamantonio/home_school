@@ -18,6 +18,9 @@ export function MainLayout() {
             <Link to="/dashboard" className="text-gray-600 hover:text-gray-900">
               Dashboard
             </Link>
+            <Link to="/parent" className="text-gray-600 hover:text-gray-900">
+              Parent
+            </Link>
           </nav>
         </div>
       </header>
