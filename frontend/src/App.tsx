@@ -12,6 +12,7 @@ import { ParentDashboard } from './pages/ParentDashboard'
 import { CurriculumList } from './pages/CurriculumList'
 import { CreateCurriculum } from './pages/CreateCurriculum'
 import { CurriculumDetail } from './pages/CurriculumDetail'
+import { Progress } from './pages/Progress'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +33,7 @@ function App() {
               <Route path="curricula" element={<CurriculumList />} />
               <Route path="curricula/new" element={<CreateCurriculum />} />
               <Route path="curricula/:curriculumId" element={<CurriculumDetail />} />
+              <Route path="progress" element={<Progress />} />
             </Route>
           </Routes>
         </BrowserRouter>
