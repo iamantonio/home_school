@@ -57,4 +57,4 @@ class Alert(Base):
     dismissed: Mapped[bool] = mapped_column(default=False)
 
     # Metadata
-    metadata: Mapped[dict] = mapped_column(JSONB, default=dict)
+    alert_metadata: Mapped[dict] = mapped_column(JSONB, default=dict)
