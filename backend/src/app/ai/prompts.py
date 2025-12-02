@@ -96,3 +96,82 @@ Respond with ONLY valid JSON in this exact format:
     }}
   ]
 }}"""
+
+GENERATE_QUESTIONS_PROMPT = """You are an expert assessment designer for homeschool education.
+
+Generate {num_questions} questions to assess this learning objective:
+
+**Objective:** {objective_title}
+**Description:** {objective_description}
+**Subject:** {subject}
+**Grade Level:** {grade_level}
+**Standard Codes:** {standard_codes}
+
+**Question Types to Include:**
+{question_types}
+
+For each question, provide:
+- Clear, unambiguous question text
+- For multiple choice: exactly 4 options (A, B, C, D) with one correct answer
+- For numeric: the exact numeric answer (accept small tolerance)
+- For equation: the algebraic expression answer
+- For short answer: expected answer and key points to look for
+- Two progressive hints:
+  - Hint 1: Gentle nudge toward the right approach
+  - Hint 2: Stronger clue that almost gives away the answer
+
+Respond with ONLY valid JSON in this exact format:
+{{
+  "questions": [
+    {{
+      "question_type": "multiple_choice",
+      "question_text": "What is 2 + 2?",
+      "options": ["A. 3", "B. 4", "C. 5", "D. 6"],
+      "correct_answer": "B",
+      "hint_1": "Think about counting on your fingers.",
+      "hint_2": "Start with 2, then count 2 more: 2, 3, 4..."
+    }},
+    {{
+      "question_type": "short_answer",
+      "question_text": "Explain why the sky is blue.",
+      "options": null,
+      "correct_answer": "Light scattering by the atmosphere makes shorter blue wavelengths more visible.",
+      "hint_1": "Think about what happens to sunlight in the atmosphere.",
+      "hint_2": "Different colors of light scatter differently. Which colors scatter most?"
+    }},
+    {{
+      "question_type": "numeric",
+      "question_text": "Calculate: 15 * 3",
+      "options": null,
+      "correct_answer": "45",
+      "hint_1": "Try breaking it down: 15 * 3 = (10 * 3) + (5 * 3)",
+      "hint_2": "10 * 3 = 30, and 5 * 3 = 15. Now add them."
+    }},
+    {{
+      "question_type": "equation",
+      "question_text": "Simplify: 2x + 3x",
+      "options": null,
+      "correct_answer": "5x",
+      "hint_1": "When you have like terms, you can combine them.",
+      "hint_2": "2 of something plus 3 of something equals how many of that thing?"
+    }}
+  ]
+}}"""
+
+GRADE_SHORT_ANSWER_PROMPT = """You are grading a student's short answer response.
+
+**Question:** {question}
+**Expected Answer:** {expected_answer}
+**Student's Answer:** {student_answer}
+
+Evaluate if the student's answer is correct. Consider:
+- Partial credit for partially correct answers
+- Accept equivalent phrasings and explanations
+- Focus on conceptual understanding, not exact wording
+
+Respond with ONLY valid JSON:
+{{
+  "correct": true/false,
+  "confidence": 0.0-1.0,
+  "feedback": "Brief explanation of what was right/wrong"
+}}"""
