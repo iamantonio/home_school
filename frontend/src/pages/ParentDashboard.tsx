@@ -17,15 +17,32 @@ interface ParentDashboardData {
   total_family_sessions: number
 }
 
+interface Alert {
+  id: string
+  alert_type: string
+  title: string
+  message: string
+  read: boolean
+  created_at: string
+  student_name: string | null
+}
+
+interface AlertsData {
+  alerts: Alert[]
+  unread_count: number
+}
+
 export function ParentDashboard() {
   const { user } = useAuth()
   const [data, setData] = useState<ParentDashboardData | null>(null)
+  const [alerts, setAlerts] = useState<AlertsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (user) {
       loadDashboard()
+      loadAlerts()
     }
   }, [user])
 
@@ -43,6 +60,33 @@ export function ParentDashboard() {
       console.error(err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadAlerts = async () => {
+    try {
+      const response = await api.get('/api/alerts')
+      setAlerts(response.data)
+    } catch (err) {
+      console.error('Failed to load alerts:', err)
+    }
+  }
+
+  const markAlertRead = async (alertId: string) => {
+    try {
+      await api.post(`/api/alerts/${alertId}/read`)
+      loadAlerts()
+    } catch (err) {
+      console.error('Failed to mark alert read:', err)
+    }
+  }
+
+  const dismissAlert = async (alertId: string) => {
+    try {
+      await api.post(`/api/alerts/${alertId}/dismiss`)
+      loadAlerts()
+    } catch (err) {
+      console.error('Failed to dismiss alert:', err)
     }
   }
 
@@ -82,6 +126,57 @@ export function ParentDashboard() {
           <p className="text-3xl font-bold">{data.total_family_sessions}</p>
         </div>
       </div>
+
+      {/* Alerts */}
+      {alerts && alerts.alerts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            Alerts {alerts.unread_count > 0 && (
+              <span className="bg-red-500 text-white text-sm px-2 py-1 rounded-full ml-2">
+                {alerts.unread_count}
+              </span>
+            )}
+          </h2>
+          <div className="space-y-2">
+            {alerts.alerts.map((alert) => (
+              <div
+                key={alert.id}
+                className={`bg-white rounded-lg border p-4 ${
+                  !alert.read ? 'border-l-4 border-l-blue-500' : ''
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold">{alert.title}</p>
+                    <p className="text-gray-600 text-sm">{alert.message}</p>
+                    {alert.student_name && (
+                      <p className="text-gray-400 text-xs mt-1">
+                        Student: {alert.student_name}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {!alert.read && (
+                      <button
+                        onClick={() => markAlertRead(alert.id)}
+                        className="text-blue-600 text-sm hover:underline"
+                      >
+                        Mark read
+                      </button>
+                    )}
+                    <button
+                      onClick={() => dismissAlert(alert.id)}
+                      className="text-gray-400 text-sm hover:text-gray-600"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Student Cards */}
       <h2 className="text-xl font-semibold mb-4">Students</h2>
