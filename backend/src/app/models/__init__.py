@@ -4,6 +4,14 @@ from src.app.models.student import StudentProfile
 from src.app.models.curriculum import Curriculum, Unit, LearningObjective, Subject
 from src.app.models.session import Session, SessionMessage, SessionStatus
 from src.app.models.progress import Progress, Alert, MasteryLevel
+from src.app.models.assessment import (
+    Assessment,
+    Question,
+    Response,
+    MasteryAttempt,
+    AssessmentStatus,
+    QuestionType,
+)
 
 __all__ = [
     "Family",
@@ -21,4 +29,10 @@ __all__ = [
     "Progress",
     "Alert",
     "MasteryLevel",
+    "Assessment",
+    "Question",
+    "Response",
+    "MasteryAttempt",
+    "AssessmentStatus",
+    "QuestionType",
 ]
