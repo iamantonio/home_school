@@ -5,6 +5,7 @@ from src.app.api.alerts import router as alerts_router
 from src.app.api.auth import router as auth_router
 from src.app.api.curriculum import router as curriculum_router
 from src.app.api.dashboard import router as dashboard_router
+from src.app.api.progress import router as progress_router
 from src.app.api.tutor import router as tutor_router
 
 app = FastAPI(
@@ -27,6 +28,7 @@ app.include_router(alerts_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 app.include_router(curriculum_router, prefix="/api")
 app.include_router(dashboard_router, prefix="/api")
+app.include_router(progress_router, prefix="/api")
 app.include_router(tutor_router, prefix="/api")
 
 
