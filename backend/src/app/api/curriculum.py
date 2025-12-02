@@ -14,7 +14,9 @@ from src.app.schemas.curriculum import (
     UnitResponse,
     LearningObjectiveCreate,
     LearningObjectiveResponse,
+    GenerateCurriculumRequest,
 )
+from src.app.services.curriculum import CurriculumService
 
 router = APIRouter(prefix="/curricula", tags=["curricula"])
 
@@ -130,6 +132,29 @@ async def create_curriculum(
         .options(selectinload(Curriculum.units).selectinload(Unit.learning_objectives))
     )
     return result.scalar_one()
+
+
+@router.post("/generate", response_model=CurriculumResponse, status_code=status.HTTP_201_CREATED)
+async def generate_curriculum(
+    data: GenerateCurriculumRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> CurriculumResponse:
+    """Generate a curriculum using AI."""
+    student_ids = await get_family_student_ids(current_user, db)
+
+    if data.student_id not in student_ids:
+        raise HTTPException(status_code=403, detail="Cannot create curriculum for this student")
+
+    service = CurriculumService(db)
+    curriculum = await service.generate_curriculum(
+        student_id=data.student_id,
+        subject=data.subject,
+        grade_level=data.grade_level,
+        goals=data.goals,
+    )
+
+    return curriculum
 
 
 @router.delete("/{curriculum_id}", status_code=status.HTTP_204_NO_CONTENT)
