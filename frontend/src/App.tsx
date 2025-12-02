@@ -14,6 +14,7 @@ import { CreateCurriculum } from './pages/CreateCurriculum'
 import { CurriculumDetail } from './pages/CurriculumDetail'
 import { Progress } from './pages/Progress'
 import { TakeQuiz } from './pages/TakeQuiz'
+import { AssessmentHistory } from './pages/AssessmentHistory'
 
 const queryClient = new QueryClient()
 
@@ -36,6 +37,7 @@ function App() {
               <Route path="curricula/:curriculumId" element={<CurriculumDetail />} />
               <Route path="progress" element={<Progress />} />
               <Route path="quiz/:objectiveId" element={<TakeQuiz />} />
+              <Route path="assessments" element={<AssessmentHistory />} />
             </Route>
           </Routes>
         </BrowserRouter>

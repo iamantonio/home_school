@@ -5,6 +5,7 @@ const NAV_ITEMS = [
   { path: '/learn', label: 'Learn', icon: '📚' },
   { path: '/sessions', label: 'Sessions', icon: '📝' },
   { path: '/curricula', label: 'Curricula', icon: '📋' },
+  { path: '/assessments', label: 'Assessments', icon: '✓' },
   { path: '/progress', label: 'Progress', icon: '📈' },
   { path: '/dashboard', label: 'Dashboard', icon: '📊' },
 ]
