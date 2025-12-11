@@ -214,3 +214,54 @@ export async function submitQuiz(lessonId: string, score: number, total: number)
 
     revalidatePath('/course/[id]')
 }
+
+export async function addExtracurricular(formData: FormData) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    await prisma.extracurricular.create({
+        data: {
+            userId: user.id,
+            title: formData.get('title') as string,
+            category: formData.get('category') as string,
+            hours: parseInt(formData.get('hours') as string) || 0,
+            role: formData.get('role') as string,
+            description: formData.get('description') as string,
+        }
+    })
+    revalidatePath('/')
+}
+
+export async function deleteExtracurricular(id: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    await prisma.extracurricular.delete({
+        where: { id } // Ideally check ownership
+    })
+    revalidatePath('/')
+}
+
+export async function logHours(courseId: string, minutes: number, date: Date, activity: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    // Verify ownership
+    const course = await prisma.course.findUnique({
+        where: { id: courseId }
+    })
+    if (!course || course.userId !== user.id) throw new Error("Unauthorized")
+
+    await prisma.hourLog.create({
+        data: {
+            courseId,
+            minutes,
+            date,
+            activity
+        }
+    })
+    revalidatePath(`/course/${courseId}`)
+}

@@ -150,3 +150,44 @@ export async function generateSyllabus(courseId: string) {
         throw error
     }
 }
+
+export async function generateStudyHelp(topic: string, subject: string) {
+    // "Private" AI helper - returns data, doesn't save to DB
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error("Unauthorized")
+
+    if (!process.env.OPENAI_API_KEY) {
+        throw new Error("Missing API Key")
+    }
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+    const prompt = `
+        You are an expert tutor for "${subject}". The student needs help understanding: "${topic}".
+        
+        Provide:
+        1. Explanation: A clear, high-school level explanation (2 paragraphs).
+        2. VideoQuery: The best YouTube search query.
+        3. Quiz: ONE multiple choice question to check understanding.
+           - question
+           - options (4)
+           - answer (index)
+
+        Return strictly JSON:
+        {
+            "explanation": "...",
+            "videoQuery": "...",
+            "quiz": { "question": "...", "options": ["..."], "answer": 0 }
+        }
+    `
+
+    const completion = await openai.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "gpt-4o",
+        response_format: { type: "json_object" }
+    })
+
+    const content = completion.choices[0].message.content || '{}'
+    return JSON.parse(content)
+}

@@ -29,8 +29,23 @@ model Course {
   
   // ... existing fields
   units    Unit[]
+  hourLogs    HourLog[] // Track instructional time
+  objectives  LearningObjective[]
 
   @@index([userId])
+}
+
+model HourLog {
+  id          String   @id @default(uuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  date        DateTime @default(now())
+  minutes     Int      // e.g. 60 for 1 hour
+  activity    String?  // e.g. "Read Chapter 4", "Lab Experiment"
+  createdAt   DateTime @default(now())
+
+  @@index([courseId])
+  @@index([date])
 }
 
 model Unit {
@@ -80,4 +95,55 @@ model CourseTemplate {
   isLabScience Boolean @default(false)
   isNCAACore   Boolean @default(false)
   description String?
+  
+  // Link to objectives if we want templates to have them
+  objectives LearningObjective[] 
+}
+
+model LearningObjective {
+  id          String   @id @default(uuid())
+  courseTemplateId String?
+  courseTemplate CourseTemplate? @relation(fields: [courseTemplateId], references: [id])
+  
+  // Also link to active Courses
+  courseId    String?
+  course      Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  description String
+  order       Int       @default(0) // Sequence order
+  prerequisites String? // JSON array of IDs? Or we can just use description references for now.
+
+  mastery     ObjectiveMastery[]
+  attempts    QuestionAttempt[]
+}
+
+model ObjectiveMastery {
+  id               String   @id @default(uuid())
+  userId           String
+  learningObjectiveId String
+  learningObjective LearningObjective @relation(fields: [learningObjectiveId], references: [id], onDelete: Cascade)
+
+  masteryScore     Float    @default(0.0) // 0-100
+  explanationScore Float    @default(0.0) // 0-100 or 0-1
+  numAttempts      Int      @default(0)
+  numHintsUsed     Int      @default(0)
+  lastAssessedAt   DateTime @default(now())
+
+  @@unique([userId, learningObjectiveId])
+}
+
+model QuestionAttempt {
+  id               String   @id @default(uuid())
+  userId           String
+  learningObjectiveId String
+  learningObjective LearningObjective @relation(fields: [learningObjectiveId], references: [id], onDelete: Cascade)
+
+  questionId       String?   // External or generated ID
+  isCorrect        Boolean
+  numHintsUsed     Int       @default(0)
+  responseTimeMs   Int       @default(0)
+  rawAnswer        String?   // The text they typed or selected
+  createdAt        DateTime  @default(now())
+
+  @@index([userId])
 }

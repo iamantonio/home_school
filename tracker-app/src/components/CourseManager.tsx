@@ -56,22 +56,26 @@ export default function CourseManager({ courses }: CourseManagerProps) {
 
     return (
         <div className="w-full">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-text-primary">Course Plan</h2>
-                <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold font-serif text-text-primary">Course Plan</h2>
+                    <p className="text-text-secondary text-sm">Manage your 4-year high school curriculum.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
                     <button
                         onClick={handleAutoGenerate}
                         disabled={isGenerating}
-                        className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl border border-glass-border hover:bg-bg-tertiary transition-colors text-accent-secondary disabled:opacity-50"
+                        className="btn-secondary flex items-center gap-2 px-3 py-2 rounded-xl border border-glass-border hover:bg-bg-tertiary transition-colors text-xs text-accent-secondary disabled:opacity-50"
                     >
-                        {isGenerating ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
-                        Auto-Fill Plan
+                        {isGenerating ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                        Auto-Fill
                     </button>
-                    <button className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl border border-glass-border hover:bg-bg-tertiary transition-colors" onClick={() => handleOpenCatalog(9)}>
-                        <BookOpen size={20} /> Browse Catalog
+                    <button className="btn-secondary flex items-center gap-2 px-3 py-2 rounded-xl border border-glass-border hover:bg-bg-tertiary transition-colors text-xs" onClick={() => handleOpenCatalog(9)}>
+                        <BookOpen size={16} /> Catalog
                     </button>
-                    <button className="btn-primary flex items-center gap-2" onClick={() => handleOpenModal(9)}>
-                        <Plus size={20} /> Add Custom
+                    <div className="w-px h-8 bg-glass-border mx-1 hidden sm:block"></div>
+                    <button className="btn-primary flex items-center gap-2 px-4 py-2" onClick={() => handleOpenModal(9)}>
+                        <Plus size={18} /> Add Custom
                     </button>
                 </div>
             </div>

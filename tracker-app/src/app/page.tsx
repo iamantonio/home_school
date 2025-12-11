@@ -6,6 +6,7 @@ import ProgressDashboard from '@/components/ProgressDashboard'
 import { calculateProgress } from '@/lib/requirements'
 import SignOutButton from '@/components/SignOutButton'
 import { FileText } from 'lucide-react'
+import Portfolio from '@/components/Portfolio'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -26,6 +27,11 @@ export default async function Home() {
     orderBy: {
       title: 'asc'
     }
+  })
+
+  const extracurriculars = await prisma.extracurricular.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: 'desc' }
   })
 
   // Calculate stats
@@ -57,7 +63,7 @@ export default async function Home() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <header className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-text-secondary bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold font-serif bg-gradient-to-r from-white to-text-secondary bg-clip-text text-transparent mb-2">
             Academic Dashboard
           </h1>
           <div className="flex items-center gap-4">
@@ -84,7 +90,14 @@ export default async function Home() {
 
       <main className="flex flex-col gap-12">
         <ProgressDashboard progress={progress} />
-        <CourseManager courses={courses} />
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          <div className="xl:col-span-3 space-y-8">
+            <CourseManager courses={courses} />
+          </div>
+          <div className="xl:col-span-1">
+            <Portfolio activities={extracurriculars} />
+          </div>
+        </div>
       </main>
     </div>
   )
