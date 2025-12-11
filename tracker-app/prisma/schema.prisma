@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  subject     String   // SQLite doesn't support Enums
+  credits     Float
+  gradeLevel  Int
+  grade       String?
+  isLabScience Boolean @default(false)
+  isNCAACore   Boolean @default(false)
+  term        String
+  isArchived  Boolean  @default(false)
+  userId      String   @default("user_placeholder")
+  
+  // ... existing fields
+  units    Unit[]
+
+  @@index([userId])
+}
+
+model Unit {
+  id          String   @id @default(uuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  weekNumber  Int
+  description String?
+  isCompleted Boolean  @default(false)
+  lessons     Lesson[]
+
+  @@index([courseId])
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  unitId      String
+  unit        Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  title       String
+  contentType String   // 'reading', 'video', 'quiz'
+  content     String?  // Markdown content
+  videoUrl    String?
+  quizScore   Int?     // Number of correct answers
+  quizTotal   Int?     // Total questions
+  isCompleted Boolean  @default(false)
+
+  @@index([unitId])
+}
+
+model Extracurricular {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String   // e.g. "Varsity Soccer", "Robotics Club"
+  role        String?  // e.g. "Captain", "Member"
+  hours       Int      @default(0)
+  description String?
+  category    String   // 'Sport', 'Club', 'Volunteer', 'Work'
+  createdAt   DateTime @default(now())
+}
+
+model CourseTemplate {
+  id          String   @id @default(uuid())
+  title       String
+  subject     String
+  credits     Float    @default(1.0)
+  isLabScience Boolean @default(false)
+  isNCAACore   Boolean @default(false)
+  description String?
+}

@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0f0e13;
+  --foreground: #f0f0f5;
+
+  --bg-primary: #0f0e13;
+  --bg-secondary: #1a1923;
+  --bg-tertiary: #272533;
+
+  --text-primary: #f0f0f5;
+  --text-secondary: #a0a0b0;
+  --text-muted: #666677;
+
+  --accent-primary: #b7a6f6;
+  --accent-secondary: #d4af37;
+
+  --danger: #ff5f5f;
+  --success: #00e096;
+  --warning: #f7b955;
+
+  --glass-bg: rgba(26, 25, 35, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-glass-bg backdrop-blur-xl border border-glass-border rounded-2xl shadow-sm;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent-primary text-bg-primary font-bold py-2 px-4 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50;
+  }
+}
